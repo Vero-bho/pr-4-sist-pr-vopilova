@@ -6,13 +6,20 @@
     <style>
         body { font-family: Arial; background: #55082d; color: white; padding: 20px; }
         
+        .main-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
         .box { 
             background: white; 
             color: black; 
             padding: 25px; 
             border-radius: 8px; 
-            max-width: 500px; 
-            margin-bottom: 20px; 
+            flex: 1;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
@@ -53,39 +60,59 @@
             border-left: 4px solid #743e58;
             border-radius: 4px;
         }
+
+        .photo-box {
+            flex: 1;
+        }
+        
+        .photo-box img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 800px) {
+            .main-container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <h1>Салон красоты</h1>
+    <h1 style="text-align: center; margin-bottom: 30px;">Салон красоты</h1>
 
-    <div class="box">
-        <h2>Запись</h2>
-        <label>Имя:</label>
-        <input type="text" id="name" placeholder="Введите ваше имя">
+    <div class="main-container">
+        <div class="box">
+            <h2>Запись</h2>
+            <label>Имя:</label>
+            <input type="text" id="name" placeholder="Введите ваше имя">
 
-        <label>Телефон:</label>
-        <input type="text" id="phone" placeholder="+7 999 999-99-99">
+            <label>Телефон:</label>
+            <input type="text" id="phone" placeholder="+7 999 999-99-99">
 
-        <label>Услуга:</label>
-        <select id="service">
-            <option value=""> Выберите услугу </option>
-        </select>
+            <label>Услуга:</label>
+            <select id="service">
+                <option value=""> Выберите услугу </option>
+            </select>
 
-        <label>Мастер:</label>
-        <select id="master">
-            <option value=""> Выберите мастера </option>
-        </select>
+            <label>Мастер:</label>
+            <select id="master">
+                <option value=""> Выберите мастера </option>
+            </select>
 
-        <label>Тип волос:</label>
-        <select id="hair">
-            <option value=""> Выберите тип волос </option>
-        </select>
+            <label>Тип волос:</label>
+            <select id="hair">
+                <option value=""> Выберите тип волос </option>
+            </select>
 
-        <button id="send">Отправить заявку</button>
-        <p id="msg"></p>
+            <button id="send">Отправить заявку</button>
+            <p id="msg"></p>
+        </div>
+
+        <div class="photo-box">
+            <img src="/photo.jpg" alt="Наш салон">
+        </div>
     </div>
 
-    <div class="box">
+    <div class="box" style="max-width: 1000px; margin: 30px auto 0;">
         <h2>История заявок</h2>
         <ul id="list"></ul>
     </div>
