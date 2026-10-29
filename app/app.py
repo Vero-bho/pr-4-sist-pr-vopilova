@@ -9,11 +9,14 @@ ROOT = Path(__file__).parent.parent
 APP_DIR = Path(__file__).parent
 DATA_DIR = ROOT / "data"
 OUTPUT_FILE = ROOT / "output" / "data.json"
+HAIR_TYPES_FILE = DATA_DIR / "api_hair_types.json"
 
 OUTPUT_FILE.parent.mkdir(exist_ok=True) 
+DATA_DIR.mkdir(exist_ok=True) 
 
 SERVICES_API_URL = "https://dummyjson.com/products/category/beauty?_limit=5"
-MASTERS_API_URL = "https://dummyjson.com/comments?_limit=3"
+MASTERS_API_URL = "https://dummyjson.com/users?_limit=3"
+HAIR_API_URL = "https://dummyjson.com/products/category/skin-care?_limit=3"
 
 sem = asyncio.Semaphore(3)
 
@@ -39,6 +42,30 @@ async def collect_data_async():
         services_data, masters_data = await asyncio.gather(task1, task2)
         return services_data, masters_data
 
+async def generate_hair_types():
+    async with aiohttp.ClientSession() as session:
+        data = await fetch_data(HAIR_API_URL, session)
+        if data and "products" in data:
+            hair_types = {"hair_types": []}
+            for i, item in enumerate(data["products"], start=1):
+                hair_types["hair_types"].append({
+                    "id": i,
+                    "name": item["title"].split()[0]
+                })
+            
+            hair_types["hair_types"].extend([
+                {"id": 10, "name": "Прямые"},
+                {"id": 11, "name": "Волнистые"},
+                {"id": 12, "name": "Кудрявые"},
+                {"id": 13, "name": "Кучерявые (афро)"}
+            ])
+
+            with open(HAIR_TYPES_FILE, "w", encoding="utf-8") as f:
+                json.dump(hair_types, f, ensure_ascii=False, indent=2)
+            print("Файл api_hair_types.json успешно создан!")
+
+asyncio.run(generate_hair_types())
+
 def save_data(data, filename=OUTPUT_FILE):
     with open(filename, "a", encoding="utf-8") as file:
         file.write(json.dumps(data, ensure_ascii=False) + "\n")
@@ -57,23 +84,21 @@ async def post_booking(request):
     phone = data.get("phone", "").strip()
     service = data.get("service", "").strip()
     master = data.get("master", "").strip()
-    hair = data.get("hair", "").strip()  # Читаем тип волос
+    hair = data.get("hair", "").strip()
     
     if len(name) < 2:
         return web.json_response({"ok": False, "error": "Имя слишком короткое"})
     if len(phone) < 5:
         return web.json_response({"ok": False, "error": "Введите телефон"})
-    if not service or not master:
-        return web.json_response({"ok": False, "error": "Выберите услугу и мастера"})
-    if not hair:
-        return web.json_response({"ok": False, "error": "Выберите тип волос"})
+    if not service or not master or not hair:
+        return web.json_response({"ok": False, "error": "Заполните все поля"})
 
     booking = {
         "client": name,
         "phone": phone,
         "service": service,
         "master": master,
-        "hair": hair,  # Сохраняем в файл
+        "hair": hair,
         "timestamp": datetime.now().isoformat()
     }
     

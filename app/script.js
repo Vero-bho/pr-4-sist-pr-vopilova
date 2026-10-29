@@ -1,4 +1,3 @@
-// Запасные данные
 const fallbackServices = [
     { name: "Женская стрижка", price: 2500 },
     { name: "Мужская стрижка", price: 1500 },
@@ -23,9 +22,9 @@ const fallbackHair = [
     { name: "Прямые" },
     { name: "Волнистые" },
     { name: "Кудрявые" },
-    { name: "Кучерявые (афро)" },
-    { name: "Жёсткие / Толстые" },
-    { name: "Тонкие / Мягкие" }
+    { name: "Кучерявые" },
+    { name: "Жёсткие" },
+    { name: "Тонкие" }
 ];
 
 async function loadSelects() {
@@ -37,7 +36,6 @@ async function loadSelects() {
     let masters = fallbackMasters;
     let hairs = fallbackHair;
 
-    // Загрузка услуг
     try {
         const servResp = await fetch('/data/api_services.json');
         if (servResp.ok) {
@@ -46,7 +44,6 @@ async function loadSelects() {
         }
     } catch (e) { console.log('JSON услуг не найден'); }
 
-    // Загрузка мастеров
     try {
         const mastResp = await fetch('/data/api_masters.json');
         if (mastResp.ok) {
@@ -55,7 +52,6 @@ async function loadSelects() {
         }
     } catch (e) { console.log('JSON мастеров не найден'); }
 
-    // Загрузка типов волос
     try {
         const hairResp = await fetch('/data/api_hair_types.json');
         if (hairResp.ok) {
@@ -64,7 +60,6 @@ async function loadSelects() {
         }
     } catch (e) { console.log('JSON волос не найден'); }
 
-    // Отрисовка
     serviceSelect.innerHTML = '<option value=""> Выберите услугу </option>';
     services.forEach(s => {
         const opt = document.createElement('option');
@@ -104,7 +99,6 @@ async function loadData() {
 
         data.reverse().forEach(item => {
             const li = document.createElement('li');
-            // Выводим тип волос, если он есть
             li.innerHTML = `<b>${item.client}</b> — ${item.service} <br><small>Мастер: ${item.master} | Волосы: ${item.hair || '—'}</small>`;
             ul.appendChild(li);
         });
@@ -118,7 +112,7 @@ document.getElementById('send').addEventListener('click', async () => {
     const phone = document.getElementById('phone').value;
     const service = document.getElementById('service').value;
     const master = document.getElementById('master').value;
-    const hair = document.getElementById('hair').value; // новое поле
+    const hair = document.getElementById('hair').value;
     const msg = document.getElementById('msg');
 
     if (name.trim().length < 2) { msg.textContent = 'Введите имя'; return; }
@@ -134,7 +128,7 @@ document.getElementById('send').addEventListener('click', async () => {
         const resp = await fetch('/api/book', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, phone, service, master, hair }) // добавили hair
+            body: JSON.stringify({ name, phone, service, master, hair })
         });
         
         const result = await resp.json();
