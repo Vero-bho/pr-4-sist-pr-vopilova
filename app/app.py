@@ -38,33 +38,10 @@ async def collect_data_async():
     async with aiohttp.ClientSession() as session:
         task1 = fetch_data(SERVICES_API_URL, session)
         task2 = fetch_data(MASTERS_API_URL, session)
-        
-        services_data, masters_data = await asyncio.gather(task1, task2)
-        return services_data, masters_data
+        task3 = fetch_data(HAIR_API_URL, session)
+        services_data, masters_data, hair_data = await asyncio.gather(task1, task2, task3)
+        return services_data, masters_data, hair_data
 
-async def generate_hair_types():
-    async with aiohttp.ClientSession() as session:
-        data = await fetch_data(HAIR_API_URL, session)
-        if data and "products" in data:
-            hair_types = {"hair_types": []}
-            for i, item in enumerate(data["products"], start=1):
-                hair_types["hair_types"].append({
-                    "id": i,
-                    "name": item["title"].split()[0]
-                })
-            
-            hair_types["hair_types"].extend([
-                {"id": 10, "name": "Прямые"},
-                {"id": 11, "name": "Волнистые"},
-                {"id": 12, "name": "Кудрявые"},
-                {"id": 13, "name": "Кучерявые (афро)"}
-            ])
-
-            with open(HAIR_TYPES_FILE, "w", encoding="utf-8") as f:
-                json.dump(hair_types, f, ensure_ascii=False, indent=2)
-            print("Файл api_hair_types.json успешно создан!")
-
-asyncio.run(generate_hair_types())
 
 def save_data(data, filename=OUTPUT_FILE):
     with open(filename, "a", encoding="utf-8") as file:
@@ -112,12 +89,16 @@ async def index(request):
 async def script(request):
     return web.FileResponse(APP_DIR / "script.js")
 
+async def photo(request):
+    return web.FileResponse(APP_DIR / "photo.jpg")
+
 app = web.Application()
 app.router.add_get("/", index)
 app.router.add_get("/script.js", script)
 app.router.add_get("/api/data", get_data)
 app.router.add_post("/api/book", post_booking)
 app.router.add_static("/data/", DATA_DIR)
+app.router.add_get("/photo.jpg", photo)
 
 if __name__ == "__main__":
     print("Сервер запущен: http://localhost:8000")
