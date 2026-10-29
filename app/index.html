@@ -2,9 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Запись на пирсинг</title>
+    <title>Запись в парикмахерскую</title>
     <style>
-        body { font-family: Arial; background: #2E1A47; color: white; padding: 20px; }
+        body { font-family: Arial; background: #7e0740; color: white; padding: 20px; }
         
         .box { 
             background: white; 
@@ -31,14 +31,14 @@
         select { min-height: 40px; }
 
         button { 
-            background: #7B2CBF; 
+            background: #fc007a; 
             color: white; 
             border: none; 
             cursor: pointer; 
             font-weight: bold; 
             transition: 0.2s;
         }
-        button:hover { background: #5a1b8f; }
+        button:hover { background: #fc007a; }
         
         #msg { color: red; font-weight: bold; }
         
@@ -50,13 +50,13 @@
             margin-bottom: 8px; 
             list-style: none; 
             font-size: 15px;
-            border-left: 4px solid #7B2CBF;
+            border-left: 4px solid #fc007a;
             border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>Студия пирсинга</h1>
+    <h1>Салон красоты</h1>
 
     <div class="box">
         <h2>Запись</h2>
@@ -64,7 +64,7 @@
         <input type="text" id="name" placeholder="Введите ваше имя">
 
         <label>Телефон:</label>
-        <input type="text" id="phone" placeholder="+7 999 123-45-67">
+        <input type="text" id="phone" placeholder="+7 999 999-99-99">
 
         <label>Услуга:</label>
         <select id="service">
@@ -74,6 +74,12 @@
         <label>Мастер:</label>
         <select id="master">
             <option value=""> Выберите мастера </option>
+        </select>
+
+        <!-- НОВОЕ ПОЛЕ ДЛЯ ВОЛОС -->
+        <label>Тип волос:</label>
+        <select id="hair">
+            <option value=""> Выберите тип волос </option>
         </select>
 
         <button id="send">Отправить заявку</button>
