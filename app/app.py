@@ -57,6 +57,7 @@ async def post_booking(request):
     phone = data.get("phone", "").strip()
     service = data.get("service", "").strip()
     master = data.get("master", "").strip()
+    hair = data.get("hair", "").strip()  # Читаем тип волос
     
     if len(name) < 2:
         return web.json_response({"ok": False, "error": "Имя слишком короткое"})
@@ -64,18 +65,20 @@ async def post_booking(request):
         return web.json_response({"ok": False, "error": "Введите телефон"})
     if not service or not master:
         return web.json_response({"ok": False, "error": "Выберите услугу и мастера"})
-
+    if not hair:
+        return web.json_response({"ok": False, "error": "Выберите тип волос"})
 
     booking = {
         "client": name,
         "phone": phone,
         "service": service,
         "master": master,
+        "hair": hair,  # Сохраняем в файл
         "timestamp": datetime.now().isoformat()
     }
     
     save_data(booking)
-    print(f"[+] Сохранено: {name} -> {service}")
+    print(f"[+] Сохранено: {name} -> {service} ({hair})")
     return web.json_response({"ok": True})
 
 async def index(request):
